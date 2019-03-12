@@ -14,7 +14,7 @@
 package com.google.cloud.hadoop.io.bigquery;
 
 /**
- * A class for migrating users off of BigQueryInputFormat.
+ * A class for migrating users off of DirectBigQueryInputFormat.
  *
  * @deprecated Use GsonBigQueryInputFormat instead.
  */
