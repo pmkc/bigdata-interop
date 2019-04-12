@@ -75,7 +75,7 @@ public class DirectBigQueryWordCount {
       System.out.println(
           "Usage: hadoop jar bigquery_wordcount.jar [ProjectId] [QualifiedInputTableId] "
               + "[GcsOutputPath]\n"
-              + "    ProjectId - Project under which to issue the BigQuery operations. Also"
+              + "    ProjectId - Project under which to issue the BigQuery operations. Also "
               + "serves as the default project for table IDs which don't explicitly specify a "
               + "project for the table.\n"
               + "    QualifiedInputTableId - Input table ID of the form "
@@ -90,7 +90,7 @@ public class DirectBigQueryWordCount {
     String inputQualifiedTableId = args[1];
     String outputPath = args[2];
 
-    // Create the job and get it's configuration.
+    // Create the job and get its configuration.
     Job job = new Job(parser.getConfiguration(), "wordcount");
     Configuration conf = job.getConfiguration();
 

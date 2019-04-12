@@ -11,7 +11,6 @@ import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadSession;
 import com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto;
 import com.google.cloud.hadoop.util.ConfigurationUtil;
 import com.google.common.base.Preconditions;
-import com.google.common.flogger.FluentLogger;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -21,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.hadoop.classification.InterfaceStability;
@@ -41,8 +39,6 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 @InterfaceStability.Evolving
 public class DirectBigQueryInputFormat extends InputFormat<NullWritable, GenericRecord> {
 
-  private static final FluentLogger LOG = FluentLogger.forEnclosingClass();
-
   private static final String STANDARD_TABLE_TYPE = "TABLE";
   private static String DIRECT_PARALLELISM_KEY = MRJobConfig.NUM_MAPS;
   private static int DIRECT_PARALLELISM_DEFAULT = 10;
@@ -55,15 +51,15 @@ public class DirectBigQueryInputFormat extends InputFormat<NullWritable, Generic
     try {
       bigQueryHelper = getBigQueryHelper(configuration);
     } catch (GeneralSecurityException gse) {
-      LOG.at(Level.SEVERE).log("Failed to create BigQuery client", gse);
       throw new IOException("Failed to create BigQuery client", gse);
     }
     double skewLimit = configuration
         .getDouble(BigQueryConfiguration.SKEW_LIMIT_KEY, BigQueryConfiguration.SKEW_LIMIT_DEFAULT);
     Preconditions.checkArgument(
         skewLimit >= 1.0,
-        BigQueryConfiguration.SKEW_LIMIT_KEY
-            + " is less than 1, than not all records would be read. Exiting");
+        String.format(
+            "%s is less than 1; not all records would be read. Exiting",
+            BigQueryConfiguration.SKEW_LIMIT_KEY));
     Table table = getTable(configuration, bigQueryHelper);
     ReadSession session = startSession(configuration, table, client);
     long numRows = table.getNumRows().longValue();
